@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:dash_pdf/src/service/dynamic_assets_path.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
