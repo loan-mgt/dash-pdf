@@ -1,0 +1,42 @@
+name: Build Flutter App
+
+on:
+  push:
+    branches:
+      - main  # adjust this to match your main branch name
+  pull_request:
+    branches:
+      - main  # adjust this to match your main branch name
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.3'  # adjust this to match your Flutter version
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build for Android
+        run: flutter build apk
+
+      - name: Build for iOS
+        run: flutter build ios
+
+      - name: Build for web
+        run: flutter build web
+
+      - name: Build for Linux
+        run: flutter build linux
+
+      - name: Build for Windows
+        run: flutter build windows
+
+    # Add additional steps if you want to build for other platforms such as macOS, etc.
