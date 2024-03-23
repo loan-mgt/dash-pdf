@@ -32,3 +32,4 @@ flutter:
     # Add assets from the images directory to the application.
     - assets/images/
     - assets/images/dark/header.svg
+    - assets/images/dark/compress.png

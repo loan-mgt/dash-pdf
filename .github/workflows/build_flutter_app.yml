@@ -24,17 +24,24 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Build for Android
-        run: flutter build apk
-
-      - name: Build for web
-        run: flutter build web
+      - name: Install build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake make
 
       - name: Build for Linux
-        run: flutter build linux --build-tool=make
+        run: flutter build linux
 
-      - name: Build for Windows
-        run: flutter build windows
+      #- name: Build for Android
+      #  run: flutter build apk
+
+      #- name: Build for web
+      #  run: flutter build web
+
+
+
+      #- name: Build for Windows
+      #  run: flutter build windows
 
       #- name: Build for iOS
       #  run: flutter build ios

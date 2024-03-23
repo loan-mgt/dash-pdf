@@ -2,7 +2,6 @@ import 'package:dash_pdf/src/service/dynamic_assets_path.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
 
@@ -12,26 +11,38 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
 
+    final pathCompress = DynamicAssetsPath(
+      fileName: 'compress.png',
+      brightness: theme.brightness,
+      isUniqueFile: false,
+    );
+
+    final pathMerge = DynamicAssetsPath(
+      fileName: 'merge.png',
+      brightness: theme.brightness,
+      isUniqueFile: true,
+    );
+
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
-      body: const Padding(
-        padding: EdgeInsets.all(16.0), // Adjust the padding as needed
+      body: Padding(
+        padding: const EdgeInsets.all(16.0), // Adjust the padding as needed
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Header(),
-              SizedBox(height: 20), // Add some space between header and cards
+              const Header(),
+              const SizedBox(height: 20), // Add some space between header and cards
               Center(
                 child: Wrap(
                   alignment: WrapAlignment.center,
                   spacing: 20.0, // Adjust the spacing between cards as needed
                   children: [
                     OptionCard(
-                      illustrationPath: 'assets/images/merge.png',
+                      illustrationPath: pathMerge.path,
                       illustrationAlt: 'Merge PDF',
                     ),
                     OptionCard(
-                      illustrationPath: 'assets/images/compress.png',
+                      illustrationPath: pathCompress.path,
                       illustrationAlt: 'Compress PDF',
                     ),
                     // Add more OptionCard widgets as needed
@@ -60,31 +71,33 @@ class OptionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    return Card.outlined(
-        color: theme.colorScheme.surface,
-        borderOnForeground: true,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              CardIllustration(
-                path: illustrationPath,
-                alt: illustrationAlt,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                illustrationAlt,
-                style: TextStyle(
-                  color: theme.colorScheme.onSurfaceVariant,
-                  fontWeight: FontWeight.bold,
-                  fontSize: theme.textTheme.titleLarge?.fontSize,
-                ),
-              )
 
-              // Add more widgets as needed
-            ],
-          ),
-        ));
+    return Card.outlined(
+      color: theme.colorScheme.surface,
+      borderOnForeground: true,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            CardIllustration(
+              path: illustrationPath,
+              alt: illustrationAlt,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              illustrationAlt,
+              style: TextStyle(
+                color: theme.colorScheme.onSurfaceVariant,
+                fontWeight: FontWeight.bold,
+                fontSize: theme.textTheme.titleLarge?.fontSize,
+              ),
+            )
+
+            // Add more widgets as needed
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -93,10 +106,10 @@ class CardIllustration extends StatelessWidget {
   final String alt;
 
   const CardIllustration({
-    Key? key,
+    super.key,
     required this.path,
     required this.alt,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +135,6 @@ class Header extends StatelessWidget {
       brightness: theme.brightness,
       isUniqueFile: false,
     );
-
 
     return SvgPicture.asset(
       path.path, // Use path.path instead of a hardcoded string
