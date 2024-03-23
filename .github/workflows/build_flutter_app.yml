@@ -27,7 +27,8 @@ jobs:
       - name: Install build tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y cmake make
+          sudo apt-get install -y cmake make ninja-build  # Install Ninja
+      
 
       - name: Build for Linux
         run: flutter build linux
