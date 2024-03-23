@@ -31,7 +31,7 @@ jobs:
         run: flutter build web
 
       - name: Build for Linux
-        run: flutter build linux
+        run: flutter build linux --build-tool=make
 
       - name: Build for Windows
         run: flutter build windows
