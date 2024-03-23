@@ -2,7 +2,7 @@
 
 A new Flutter project.
 
-[illu][.readme/illu.png]
+[illu](.readme/illu.png)
 
 ## Getting Started
 
