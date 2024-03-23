@@ -3,10 +3,10 @@ name: Build Flutter App
 on:
   push:
     branches:
-      - main  # adjust this to match your main branch name
+      - main
   pull_request:
     branches:
-      - main  # adjust this to match your main branch name
+      - main
 
 jobs:
   build:
@@ -19,7 +19,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.3'  # adjust this to match your Flutter version
+          flutter-version: '3.19.3'
 
       - name: Install dependencies
         run: flutter pub get
@@ -27,7 +27,7 @@ jobs:
       - name: Install build tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y cmake make ninja-build  # Install Ninja
+          sudo apt-get install -y cmake make ninja-build libgtk-3-dev
       
 
       - name: Build for Linux
