@@ -4,51 +4,60 @@
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="/src/styles.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tauri App</title>
-    <script type="module" src="/src/main.ts" defer></script>
-    <style>
-      .logo.vite:hover {
-        filter: drop-shadow(0 0 2em #747bff);
-      }
-
-      .logo.typescript:hover {
-        filter: drop-shadow(0 0 2em #2d79c7);
-      }
-    </style>
+    <title>Dash PDF</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   </head>
+  
 
-  <body>
-    <div class="container">
-      <h1>Welcome to Tauri!</h1>
+  <body class="bg-[#FFF5F5] dark:bg-[#4B3A3A] min-h-screen w-screen text-black dark:text-white">
+    <div class="w-full h-full p-5 flex flex-col items-center gap-20">
+      <div class="w-fit h-fit flex-col flex">
 
-      <div class="row">
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/src/assets/vite.svg" class="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://tauri.app" target="_blank">
-          <img
-            src="/src/assets/tauri.svg"
-            class="logo tauri"
-            alt="Tauri logo"
-          />
-        </a>
-        <a href="https://www.typescriptlang.org/docs" target="_blank">
-          <img
-            src="/src/assets/typescript.svg"
-            class="logo typescript"
-            alt="typescript logo"
-          />
-        </a>
+        <picture >
+          <source 
+            srcset="/assets/images/dark/header.svg" 
+            media="(prefers-color-scheme: dark)">
+          <img src="/assets/images/header.svg" class="max-w-80 max-h-80 w-[85vw] h-80">
+        </picture>
+
       </div>
 
-      <p>Click on the Tauri logo to learn more about the framework</p>
+      <div class="w-full h-fit flex flex-wrap justify-center gap-5"
+      x-data="{options : [
+        {
+          'title': 'Merge',
+          'icon': '/assets/images/merge.png',
+        },
+        {
+          'title': 'Compress',
+          'icon': '/assets/images/compress.png',
+          'dark_icon': '/assets/images/dark/compress.png',
+        }
+        ]
+      }">
+      <template x-for="option in options">
 
-      <form class="row" id="greet-form">
-        <input id="greet-input" placeholder="Enter a name..." />
-        <button type="submit">Greet</button>
-      </form>
 
-      <p id="greet-msg"></p>
+        <div class="h-[16rem] w-[16rem] border-2 rounded-lg p-2 flex flex-col gap-5 items-center justify-center cursor-pointer">
+
+          <picture >
+            <source
+            x-if="option.dark_icon"
+              :srcset="option.dark_icon"
+              media="(prefers-color-scheme: dark)">
+            <img :src="option.icon" class="max-w-40 max-h-40 w-40 h-40">
+          </picture>
+
+          <h3 class="text-xl font-semibold" x-text="option.title">text</h3>
+
+        </div>
+      </template>
+
+
+      </div>
+
     </div>
+    
   </body>
 </html>
