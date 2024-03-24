@@ -1,63 +1,80 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="stylesheet" href="/src/styles.css" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dash PDF</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-  </head>
-  
 
-  <body class="bg-[#FFF5F5] dark:bg-[#4B3A3A] min-h-screen w-screen text-black dark:text-white">
-    <div class="w-full h-full p-5 flex flex-col items-center gap-20">
-      <div class="w-fit h-fit flex-col flex">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dash PDF</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
 
-        <picture >
-          <source 
-            srcset="/assets/images/dark/header.svg" 
-            media="(prefers-color-scheme: dark)">
-          <img src="/assets/images/header.svg" class="max-w-80 max-h-80 w-[85vw] h-80">
-        </picture>
+<body class="bg-[#FFF5F5] dark:bg-[#4B3A3A] min-h-screen w-screen text-black dark:text-white"
+  x-data="{
+    isBottomSheetOpen: true,
+    openBottomSheet: function() {
+      console.log('open', this.isBottomSheetOpen);
+      this.isBottomSheetOpen = true;
 
-      </div>
+    },
+    closeBottomSheet: function() {
+      this.isBottomSheetOpen = false;
+    },
+    options: [
+      {
+        'title': 'Merge',
+        'icon': '/assets/images/merge.png',
+      },
+      {
+        'title': 'Compress',
+        'icon': '/assets/images/compress.png',
+        'dark_icon': '/assets/images/dark/compress.png',
+      }
+    ]
+  }">
 
-      <div class="w-full h-fit flex flex-wrap justify-center gap-5"
-      x-data="{options : [
-        {
-          'title': 'Merge',
-          'icon': '/assets/images/merge.png',
-        },
-        {
-          'title': 'Compress',
-          'icon': '/assets/images/compress.png',
-          'dark_icon': '/assets/images/dark/compress.png',
-        }
-        ]
-      }">
-      <template x-for="option in options">
+  <!-- Header -->
+  <div class="w-full h-full p-5 flex flex-col items-center gap-20">
+    <div class="w-fit h-fit flex-col flex">
+      <picture>
+        <source srcset="/assets/images/dark/header.svg" media="(prefers-color-scheme: dark)">
+        <img src="/assets/images/header.svg" class="max-w-80 max-h-80 w-[85vw] h-80">
+      </picture>
+    </div>
 
-
-        <div class="h-[16rem] w-[16rem] border-2 rounded-lg p-2 flex flex-col gap-5 items-center justify-center cursor-pointer">
-
-          <picture >
-            <source
-            x-if="option.dark_icon"
-              :srcset="option.dark_icon"
-              media="(prefers-color-scheme: dark)">
+    <!-- Cards -->
+    <div class="w-full h-fit flex flex-wrap justify-center gap-5">
+      <template x-for="(option, index) in options" :key="index">
+        <button @click.stop="openBottomSheet()" class="h-[16rem] w-[16rem] border-2 rounded-lg p-2 flex flex-col gap-5 items-center justify-center cursor-pointer">
+          <picture>
+            <template x-if="option.dark_icon">
+              <source :srcset="option.dark_icon" media="(prefers-color-scheme: dark)">
+            </template>
             <img :src="option.icon" class="max-w-40 max-h-40 w-40 h-40">
           </picture>
-
-          <h3 class="text-xl font-semibold" x-text="option.title">text</h3>
-
-        </div>
+          <h3 class="text-xl font-semibold" x-text="option.title"></h3>
+        </button>
       </template>
-
-
-      </div>
-
     </div>
-    
-  </body>
+
+    <!-- Bottom Sheet -->
+    <template x-if="isBottomSheetOpen">
+      <div id="bottomsheet" @click="closeBottomSheet()" 
+      class="fixed inset-0 bg-black/50 z-50 flex items-end justify-center transition-all duration-1000"
+      :class="isBottomSheetOpen ? 'opacity-100' : 'opacity-0'">
+        <div class="bg-[#FFF5F5] dark:bg-[#4B3A3A] w-full h-48 max-w-[38rem] p-5 
+        transition-transform duration-300 transform translate-y-0
+        pt-2 flex flex-col items-center gap-5 rounded-t-2xl justify-start"
+        :class="isBottomSheetOpen ? 'translate-y-0' : 'translate-y-full'"
+        >
+          <div class="h-1 w-24 rounded-full bg-black"></div>
+          <h3 class="text-3xl font-semibold">Compress PDF</h3>
+          <p>etstest</p>
+        </div>
+      </div>
+    </template>
+  </div>
+
+</body>
+
 </html>
