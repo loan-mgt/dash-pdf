@@ -1,7 +1,9 @@
 import 'package:dash_pdf/src/service/dynamic_assets_path.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+
+import '../option/compress_view.dart';
+
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
 
@@ -31,7 +33,8 @@ class HomeView extends StatelessWidget {
           child: Column(
             children: [
               const Header(),
-              const SizedBox(height: 20), // Add some space between header and cards
+              const SizedBox(height: 20),
+              // Add some space between header and cards
               Center(
                 child: Wrap(
                   alignment: WrapAlignment.center,
@@ -40,10 +43,29 @@ class HomeView extends StatelessWidget {
                     OptionCard(
                       illustrationPath: pathMerge.path,
                       illustrationAlt: 'Merge PDF',
+                      onPressed: () {
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return CompressView();
+                          },
+                        );
+
+                      }
                     ),
                     OptionCard(
                       illustrationPath: pathCompress.path,
                       illustrationAlt: 'Compress PDF',
+                        onPressed: () {
+                          showModalBottomSheet(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return CompressView();
+                            },
+                          );
+
+                        }
+
                     ),
                     // Add more OptionCard widgets as needed
                   ],
@@ -61,40 +83,44 @@ class HomeView extends StatelessWidget {
 class OptionCard extends StatelessWidget {
   final String illustrationPath;
   final String illustrationAlt;
+  final VoidCallback? onPressed;
 
   const OptionCard({
     super.key,
     required this.illustrationPath,
     required this.illustrationAlt,
+    this.onPressed,
   });
 
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
 
-    return Card.outlined(
-      color: theme.colorScheme.surface,
-      borderOnForeground: true,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            CardIllustration(
-              path: illustrationPath,
-              alt: illustrationAlt,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              illustrationAlt,
-              style: TextStyle(
-                color: theme.colorScheme.onSurfaceVariant,
-                fontWeight: FontWeight.bold,
-                fontSize: theme.textTheme.titleLarge?.fontSize,
+    return GestureDetector(
+      onTap: onPressed,
+      child: Card(
+        color: theme.colorScheme.surface,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              // Card illustration widget
+              SizedBox(
+                width: 100,
+                height: 100,
+                child: Image.asset(illustrationPath),
               ),
-            )
-
-            // Add more widgets as needed
-          ],
+              const SizedBox(height: 16),
+              Text(
+                illustrationAlt,
+                style: TextStyle(
+                  color: theme.colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.bold,
+                  fontSize: theme.textTheme.headline6?.fontSize,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
