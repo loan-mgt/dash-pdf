@@ -9,8 +9,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 
-<body class="bg-[#FFF5F5] dark:bg-[#4B3A3A] min-h-screen w-screen text-black dark:text-white"
-  x-data="{
+<body class="bg-[#FFF5F5] dark:bg-[#4B3A3A] min-h-screen w-screen text-black dark:text-white" x-data="{
     isBottomSheetOpen: true,
     openBottomSheet: function() {
       console.log('open', this.isBottomSheetOpen);
@@ -42,10 +41,20 @@
       </picture>
     </div>
 
+    <div>
+      <h3>tmp</h3>
+      <form>
+        <label>select file </label>
+        <input type="file" name="file" accept="application/pdf">
+        <button id="buttonSubmitForm">go</button>
+      </form>
+    </div>
+
     <!-- Cards -->
     <div class="w-full h-fit flex flex-wrap justify-center gap-5">
       <template x-for="(option, index) in options" :key="index">
-        <button @click.stop="openBottomSheet()" class="h-[16rem] w-[16rem] border-2 rounded-lg p-2 flex flex-col gap-5 items-center justify-center cursor-pointer">
+        <button @click.stop="openBottomSheet()"
+          class="h-[16rem] w-[16rem] border-2 rounded-lg p-2 flex flex-col gap-5 items-center justify-center cursor-pointer">
           <picture>
             <template x-if="option.dark_icon">
               <source :srcset="option.dark_icon" media="(prefers-color-scheme: dark)">
@@ -59,14 +68,13 @@
 
     <!-- Bottom Sheet -->
     <template x-if="isBottomSheetOpen">
-      <div id="bottomsheet" @click="closeBottomSheet()" 
-      class="fixed inset-0 bg-black/50 z-50 flex items-end justify-center transition-all duration-1000"
-      :class="isBottomSheetOpen ? 'opacity-100' : 'opacity-0'">
+      <div id="bottomsheet" @click="closeBottomSheet()"
+        class="fixed inset-0 bg-black/50 z-50 flex items-end justify-center transition-all duration-1000"
+        :class="isBottomSheetOpen ? 'opacity-100' : 'opacity-0'">
         <div class="bg-[#FFF5F5] dark:bg-[#4B3A3A] w-full h-48 max-w-[38rem] p-5 
         transition-transform duration-300 transform translate-y-0
         pt-2 flex flex-col items-center gap-5 rounded-t-2xl justify-start"
-        :class="isBottomSheetOpen ? 'translate-y-0' : 'translate-y-full'"
-        >
+          :class="isBottomSheetOpen ? 'translate-y-0' : 'translate-y-full'">
           <div class="h-1 w-24 rounded-full bg-black"></div>
           <h3 class="text-3xl font-semibold">Compress PDF</h3>
           <p>etstest</p>
@@ -78,3 +86,65 @@
 </body>
 
 </html>
+
+<script>
+  // access the pre-bundled global API functions
+  const { invoke } = window.__TAURI__.tauri
+  const { writeBinaryFile, BaseDirectory } = window.__TAURI__.fs
+
+
+  // now we can call our Command!
+  // You will see "Welcome from Tauri" replaced
+  // by "Hello, World!"!
+  invoke('greet', { name: 'World' })
+    // `invoke` returns a Promise
+    .then((response) => {
+      console.log("success", response)
+    })
+  const inputFile = document.querySelector('input[type="file"]');
+  const buttonSubmitForm = document.querySelector('#buttonSubmitForm');
+
+  buttonSubmitForm.addEventListener('click', async (e) => {
+    e.preventDefault();
+    const file = inputFile.files[0];
+    if (!file) {
+      console.error('No file selected');
+      return;
+    }
+
+    // Read the file content
+    const fileContent = await readFileContent(file);
+
+    // Send the file data to Rust in the correct format
+    const fileData = { name: file.name, content: fileContent }; // Ensure the correct structure
+    const response = await invoke('compress', { fileData: fileData });
+
+
+    // Ask user for the file name
+    const fileName = window.prompt("Enter file name:", file.name);
+    const uint8Array = new Uint8Array(response);
+
+    // Write the binary file using Tauri's API
+    await writeBinaryFile(
+      fileName,
+      uint8Array,
+      {dir: BaseDirectory.Download  }
+    );
+
+  });
+
+  function readFileContent(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        resolve(event.target.result);
+      };
+      reader.onerror = (error) => {
+        reject(error);
+      };
+      reader.readAsBinaryString(file);
+    });
+  }
+
+
+</script>
