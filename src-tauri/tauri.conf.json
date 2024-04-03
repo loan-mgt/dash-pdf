@@ -17,7 +17,12 @@
         "all": false,
         "open": true
       },
+      "dialog": {
+        "open": true,
+        "save": true
+      },
       "fs": {
+        "readFile": true,
         "writeFile": true,
         "scope": ["$DOWNLOAD/*"]
       }

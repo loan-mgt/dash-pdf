@@ -44,9 +44,7 @@
     <div>
       <h3>tmp</h3>
       <form>
-        <label>select file </label>
-        <input type="file" name="file" accept="application/pdf">
-        <button id="buttonSubmitForm">go</button>
+        <button id="buttonSubmitForm" class="bg-red-500 p-2 rounded-lg">go</button>
       </form>
     </div>
 
@@ -90,61 +88,45 @@
 <script>
   // access the pre-bundled global API functions
   const { invoke } = window.__TAURI__.tauri
-  const { writeBinaryFile, BaseDirectory } = window.__TAURI__.fs
+  const  {open} = window.__TAURI__.dialog;
 
 
-  // now we can call our Command!
-  // You will see "Welcome from Tauri" replaced
-  // by "Hello, World!"!
-  invoke('greet', { name: 'World' })
-    // `invoke` returns a Promise
-    .then((response) => {
-      console.log("success", response)
-    })
-  const inputFile = document.querySelector('input[type="file"]');
   const buttonSubmitForm = document.querySelector('#buttonSubmitForm');
 
-  buttonSubmitForm.addEventListener('click', async (e) => {
-    e.preventDefault();
-    const file = inputFile.files[0];
-    if (!file) {
-      console.error('No file selected');
-      return;
+
+async function selectFile() {
+  try {
+    const result = await open( { multiple: false, filters: [{ name: 'PDF', extensions: ['pdf'] }] }); //only pdf
+    if (!result) {
+      console.error("No file selected");
+      return null;
     }
-
-    // Read the file content
-    const fileContent = await readFileContent(file);
-
-    // Send the file data to Rust in the correct format
-    const fileData = { name: file.name, content: fileContent }; // Ensure the correct structure
-    const response = await invoke('compress', { fileData: fileData });
-
-
-    // Ask user for the file name
-    const fileName = window.prompt("Enter file name:", file.name);
-    const uint8Array = new Uint8Array(response);
-
-    // Write the binary file using Tauri's API
-    await writeBinaryFile(
-      fileName,
-      uint8Array,
-      {dir: BaseDirectory.Download  }
-    );
-
-  });
-
-  function readFileContent(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        resolve(event.target.result);
-      };
-      reader.onerror = (error) => {
-        reject(error);
-      };
-      reader.readAsBinaryString(file);
-    });
+    return result;
+  } catch (error) {
+    console.error("Error while selecting file:", error);
+    return null;
   }
+}
+
+buttonSubmitForm.addEventListener('click', async (e) => {
+  e.preventDefault();
+
+  const filePath = await selectFile();
+  if (!filePath) return;
+
+  const fileName = "tmp.pdf";
+
+  console.log('File selected:', filePath, typeof filePath);
+
+  const fileData = { name: fileName, path: filePath }; // Ensure the correct structure
+  const response = await invoke('compress', { fileData: fileData });
+
+  if (response.ok) {
+    console.log('File compressed successfully');
+  } else {
+    console.error('Failed to compress file:', response.error);
+  }
+});
 
 
 </script>
